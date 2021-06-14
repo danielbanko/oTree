@@ -3,8 +3,12 @@ from os import environ
 SESSION_CONFIGS = [
     dict(
         name='syp_v1',
+        display_name='DB Decision-Making Study',
         app_sequence=['syp_v1'],
-        num_demo_participants=3,
+        num_demo_participants=1,
+        ret_timer=180,
+        showupfee=6
+
     ),
 ]
 
