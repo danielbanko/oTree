@@ -1,93 +1,97 @@
+
 from otree.api import *
-import time
 
 c = Currency
 
+author = "Daniel Banko (daniel.bankoferran@gmail.com"
 doc = """
-Your app description
+Code for SYP
 """
 
 
 class Constants(BaseConstants):
     name_in_url = 'syp_v1'
-    players_per_group = None
-    num_rounds = 1
+    # players_per_group = 10 #used for actual trials
+    players_per_group = None #testing purposes
     task_timer = 120
-    num_rounds = 100 # must be more than the max one person can do in task_timer seconds
-
-    INTS_T1 = [
-        [90, 95],
-        [14, 19],
-        [35, 50],
-        [30, 29],
-        [34, 31],
-        [78, 82],
-        [60, 27],
-        [38, 70],
-        [85, 19],
-        [89, 26],
-        [19, 18],
-        [64, 83],
-        [32, 99],
-        [14, 17],
-        [51, 60]]
+    num_rounds = 1 # must be more than the max one person can do in task_timer seconds
 
 
 class Subsession(BaseSubsession):
-    # def before_session_starts(subsession):
-
-    def creating_sesssion(subsession): #TODO: FIGURE OUT WHY CODE IN CREATING_SESSION IS NOT RUNNING
-        print('test')
-
-        if 'task_timer' in subsession.session.config:
-            task_timer = subsession.session.config['task_timer']
-        else:
-            task_timer = Constants.task_timer
-            print('test')
-
-        for p in subsession.get_players():
-            p.task_timer = task_timer
-            p.int1 = Constants.INTS_T1[subsession.round_number - 1][0]
-            print('p is', p)
-            print('p.int1 is', p.int1)
-            p.int2 = Constants.INTS_T1[subsession.round_number - 1][1]
-            p.solution = p.int1+p.int2
-
-
+    pass
 
 class Group(BaseGroup):
     pass
 
 
 class Player(BasePlayer):
+    treatment_group = models.StringField()
+
 
     def score_round(self):
         # update player payoffs
-        if (self.solution == self.user_total):
+        if (self.correct_text == self.user_text):
             self.is_correct = True
             self.payoff_score = 1
         else:
             self.is_correct = False
-            self.payoff_score = 0
+            self.payoff_score = c(0)
+
+    age = models.PositiveIntegerField
+
+    task_timer = models.PositiveIntegerField( doc = "The length of the real effort task timer.")
 
 
-    task_timer = models.PositiveIntegerField( doc = "The length of the real effort task timer.", initial = 0)
 
-    int1 = models.PositiveIntegerField( doc ="This round's first int", initial = 0)
+    correct_text = models.CharField( doc = "")
 
-    int2 = models.PositiveIntegerField( doc = "This round's second int", initial = 0)
-
-    solution = models.PositiveIntegerField( doc = "This round's correct summation", initial = 0)
+    user_text = models.CharField( doc = "")
 
     user_total = models.PositiveIntegerField(
         min = 1,
         max = 9999,
-        doc = "user's summation")
+        doc = "user's score")
         #widget = widgets.TextInput(attrs={'autocomplete':'off'}))
 
-    is_correct = models.BooleanField( doc= "did the user get the task correct?" , initial = 0)
+    is_correct = models.BooleanField( doc= "did the user get the task correct?")
 
-    payoff_score = models.FloatField( doc = '''score in this task''', initial = 0)
+    payoff_score = models.FloatField( doc = '''earnings in this task''')
+
+    user_payoff = models.FloatField( doc = '''total earnings for user''')
+
+    def custom_export(players):
+        # header row
+        yield ['session', 'participant_code', 'round_number', 'id_in_group', 'payoff', 'treatment_group']
+        for p in players:
+            participant = p.participant
+            session = p.session
+            yield [session.code, participant.code, p.round_number, p.id_in_group, p.payoff, p.treatment_group]
+
+def creating_session(subsession):
+    import itertools
+    treatment_groups = itertools.cycle(['NC', 'PC', 'FC'])
+    if subsession.round_number == 1:
+        for player in subsession.get_players():
+            # randomize to treatments
+            player.treatment_group = next(treatment_groups)
+            print('set treatment_group to', player.treatment_group)
+            return player.treatment_group
+
+# def creating_sesssion(self):  # TODO: FIGURE OUT WHY CODE IN CREATING_SESSION IS NOT RUNNING
+#
+#     print('test')
+#     players = self.get_players()
+#
+#     if 'task_timer' in self.session.config:
+#         task_timer = self.session.config['task_timer']
+#     else:
+#         task_timer = Constants.task_timer
+#         print('test')
+#
+#     for p in self.get_players():
+#         p.task_timer = task_timer
+#         print('p is', p)
+#         # p.correct_text = Constants.reference_texts[self.round_number - 1]
 
 
 # ------------------------------------------
@@ -110,88 +114,113 @@ class start(Page):
 class task(Page):
 
     form_model = 'player'
-    form_fields = ['user_total']
+    form_fields = ['user_text']
+
+    timeout_seconds = 120
+
+    # @staticmethod
+    # def vars_for_template(player):
+    #     a = player.treatment_group
+    #     return dict(
+    #         a=a,
+    #         b=1 + 1,
+    #     )
 
     # def get_timeout_seconds(self):
     #     return self.participant.vars['expiry_timestamp'] - time.time()
     #
     # def is_displayed(self):
     #     return self.participant.vars['expiry_timestamp'] - time.time() > 3
-
-    def vars_for_template(self):
-
-        # current number of correctly done tasks
-        total_payoff = 0
-        for p in self.in_all_rounds():
-            if p.payoff_score != None:
-                total_payoff += p.payoff_score
+  # current number of correctly done tasks
+  #       total_payoff = 0
+        # for p in self.player.in_all_rounds():
+        #     if p.payoff_score != None:
+        #         total_payoff += p.payoff_score
 
         # set up messages in calculation task
-        if self.round_number == 1:
-            correct_last_round = "<br>"
-        else:
-            if self.player.in_previous_rounds()[-1].is_correct:
-                correct_last_round = "Your last sum was <font color='green'>correct</font>"
-            else:
-                correct_last_round = "Your last sum was <font color='red'>incorrect</font>"
+        # if self.round_number == 1:
+        #     correct_last_round = "<br>"
+        # else:
+        #     if self.in_previous_rounds()[-1].is_correct:
+        #         correct_last_round = "Your last sum was <font color='green'>correct</font>"
+        #     else:
+        #         correct_last_round = "Your last sum was <font color='red'>incorrect</font>"
+        #
+        # return {
+        #     'int1': self.int1,
+        #     'total_payoff': round(total_payoff),
+        #     'round_count':(self.round_number - 1),
+        #     # 'debug': settings.DEBUG,
+        #     'correct_last_round': correct_last_round
+        # }
 
-        return {
-            'int1': self.int1,
-            'total_payoff': round(total_payoff),
-            'round_count':(self.round_number - 1),
-            # 'debug': settings.DEBUG,
-            'correct_last_round': correct_last_round,
-        }
+    # def before_next_page(self):
+    #     self.player.score_round()
 
-    def before_next_page(self):
-        self.player.score_round()
+
+
+def vars_for_admin_report(subsession):
+    payoffs = sorted([p.payoff for p in subsession.get_players()])
+    return dict(payoffs=payoffs)
 
 
 class ResultsWaitPage(WaitPage):
 
-    def is_displayed(self):
-        return self.round_number == Constants.num_rounds
-    def after_all_players_arrive(self):
-        pass
+    wait_for_all_groups = True
+
+    # def is_displayed(self):
+    #     return self.round_number == Constants.num_rounds
+    # def after_all_players_arrive(subsession):
+    #     subsession.
 
 
 class Results(Page):
 
-    def is_displayed(self):
-        return self.round_number == Constants.num_rounds
+    # def is_displayed(self):
+    #     return self.round_number == Constants.num_rounds
 
     def vars_for_template(self):
 
         total_payoff = 0
-        for p in self.player.in_all_rounds():
-            if p.payoff_score != None:
-                total_payoff += p.payoff_score
+        # for p in self.player.in_all_rounds():
+        #     if p.payoff_score != None:
+        #         total_payoff += p.payoff_score
 
-        self.participant.vars['task_1_score'] = total_payoff
+        # self.participant.vars['task_1_score'] = total_payoff
 
         # only keep obs if YourEntry player_sum, is not None.
         table_rows = []
-        for prev_player in self.player.in_all_rounds():
-            if (prev_player.user_total != None):
-                if (prev_player.user_total > 0):
-                    row = {
-                        'round_number': prev_player.round_number,
-                        'int1': prev_player.int1,
-                        'int2': prev_player.int2,
-                        'Ints_sum': prev_player.solution,
-                        'player_sum': round(prev_player.user_total),
-                        'is_correct': prev_player.is_correct,
-                        'payoff': round(prev_player.payoff_score),
-                    }
-                    table_rows.append(row)
+        # for prev_player in self.player.in_all_rounds():
+        #     if (prev_player.user_total != None):
+        #         if (prev_player.user_total > 0):
+        #             row = {
+        #                 'round_number': prev_player.round_number,
+        #                 'int1': prev_player.int1,
+        #                 'int2': prev_player.int2,
+        #                 'Ints_sum': prev_player.solution,
+        #                 'player_sum': round(prev_player.user_total),
+        #                 'is_correct': prev_player.is_correct,
+        #                 'payoff': round(prev_player.payoff_score),
+        #             }
+        #             table_rows.append(row)
+        #
+        # self.participant.vars['t1_results'] = table_rows
+        #
+        # return {
+        #     'table_rows':table_rows,
+        #     'total_payoff':round(total_payoff),
+        # }
 
-        self.participant.vars['t1_results'] = table_rows
-
-        return {
-            'table_rows':table_rows,
-            'total_payoff':round(total_payoff),
-        }
+# class survey(Page):
+#
+#     form_model = 'player'
+#     form_fields = ['age']
 
 
-
-page_sequence = [start, task, ResultsWaitPage, Results]
+page_sequence = [
+    start,
+    task,
+    ResultsWaitPage,
+    Results
+    # survey
+]
