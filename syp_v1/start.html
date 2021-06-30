@@ -3,49 +3,18 @@
 {{ endblock }}
 
 {{ block content }}
-
-<div class="instructions well well-lg">
-
-    <h2 class="panel-sub-heading">
-
-    </h2>
-
-    <link rel="stylesheet" type="text/css"
-          href="{% static 'global/matrix.css' %}"/>
-
-    <p>
-      In this part of the experiment you will be presented with a series of two two-digit numbers (for example, 11 and 22) which you will have to add (for example, 11 + 22 = 33).
-    </p>
-    <p>
-      Once you have entered your summation, click the <b>Next</b> button or press the <b>Enter</b> key.
-    </p>
-    <p>
-      This part will last {{ Constants.task_timer}} seconds.
-    </p>
-    <p>
-        You will get <b>1 point for each correct answer</b>.
-          Your score will not decrease if you provide an incorrect answer.
-    </p>
+<ul>
+    <li>Thank you taking part in this research study. This study will help us learn about individual decision making.</li>
+    <li>If you choose to be in the study, you will complete a survey. The study will take you about 30 minutes.</li>
+    <li>All payments and procedures will be implemented exactly as described</li>
+    <li>Please do not include your name or other information that could be used to identify you in the survey responses.</li>
+    <li>Being in this study is voluntary and you may stop at any time. Please exit the webpage if you do not wish to participate.</li>
+    <li>Questions? Please contact Daniel Banko at djb187@pitt.edu</li>
+    <li>You may print a copy of this information sheett for your records.</li>
+    <li>If you wish to participate in this study, please click the continue button</li>li>
 
 
-    <p>
-        You may not use a calculator or your phone to solve these additions, but you are welcome to make use of the provided pen and paper.
-    </p>
-
-        <p><br></p>
-     <p>
-           After {{ Constants.task_timer }} seconds, the task will stop and you will receive a summary of the results.<br>
-    </p>
-    <p>
-           Please raise your hand and alert an experimenter if you have any questions.<br>
-    </p>
-    <p>
-           Otherwise, if you are ready, please click "Next" below to start the time and this {{ Constants.task_timer}} second task.<br>
-    </p>
-
-
-
-</div>
+</ul>
 
     {{ next_button }}
 

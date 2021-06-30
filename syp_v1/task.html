@@ -6,11 +6,17 @@
 
 {{ block content }}
 
+<input type="hidden" name="num_key_pairs" id="num_key_pairs" />
+Your total is: <p id = "score"></p>
+{{ form.num_key_pairs.errors }}
+
+{{ next_button }}
 
 <script>
 let buffer = [];
 let keys = [];
 let series = [];
+let total = 0;
 
 let lastKeyTime = Date.now();
 document.addEventListener("keydown", function (event) {
@@ -20,10 +26,13 @@ document.addEventListener("keydown", function (event) {
   console.log(keys);
 
   if (keys.toString().indexOf( charList ) >= 0 ) {
-    alert( "You pressed the correct sequence" );
+    console.log("You pressed the correct sequence" );
     buffer.push(key);
     keys = [];
     series.push("1")
+    total = total + 1;
+    document.getElementById("num_key_pairs").value = total;
+    document.getElementById("score").innerHTML = total;
 
   } else {
   console.log('no match');

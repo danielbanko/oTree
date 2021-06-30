@@ -1,0 +1,15 @@
+{{ block title }}
+    Additional Instructions
+{{ endblock }}
+
+{{ block content }}
+<ul>
+    <li>Before starting each round of the keyboard pressing task, you {{ if player.treatment_group == "FC"}} must decide if you want to be {{ endif }} {{ if player.treatment_group == "PC" }} will {{ endif }} shown information about your relative performance among participants. Note that all participants perform the same keyboard pressing task as you.</li>
+    <li>It is important to note that your relative performance ranking will not affect your earnings. Your earnings are calculated solely based on the total number of sequential keyboard presses you complete before time is up.
+
+
+</ul>
+
+    {{ next_button }}
+
+{{ endblock }}
