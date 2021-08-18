@@ -5,11 +5,10 @@ SESSION_CONFIGS = [
         name='syp_v1',
         display_name='DB Decision-Making Study',
         app_sequence=['syp_v1'],
-        num_demo_participants = 2,
-        showupfee=6,
-        treatment_group='FC',
+        num_demo_participants = 20,
+        use_browser_bots=True,
         doc="""
-        Change treatment_group to either NC, PC, or FC to change treatment.
+        djb187@pitt.edu SYP project
         """
     ),
 ]
