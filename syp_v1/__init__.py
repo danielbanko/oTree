@@ -1,5 +1,6 @@
 import itertools
 import random, csv
+import math
 from otree.api import *
 
 c = Currency
@@ -12,10 +13,11 @@ Code for SYP project
 
 class Constants(BaseConstants):
     name_in_url = 'syp_v1'
-    players_per_group = None
-    num_rounds = 2
+    players_per_group = 10 #will be changed to 9 or 10 later
+    num_rounds = 5
     payment_rate = 0.02 #two cents per keystroke pair?
-    treatment_groups = ['NC', 'PC', 'FC']
+    # treatment_groups = ['NC'] #for testing purposes
+    treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
     showupfee = 6.00
 
 class Subsession(BaseSubsession):
@@ -26,11 +28,13 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    rank = models.IntegerField()
+    rank = models.IntegerField(initial=-1)
     treatment_group = models.StringField(initial='NA')
+    group_number = models.IntegerField(initial=-1)
     num_key_pairs = models.IntegerField(initial=-1)
     cum_key_pairs = models.IntegerField(initial=-1)
     practice_round = models.IntegerField(initial=-1)
+    percentile = models.FloatField(initial=-1.00)
     is_top20 = models.IntegerField(initial=-1)
     is_top50 = models.IntegerField(initial=-1)
     is_bottom50 = models.IntegerField(initial=-1)
@@ -42,10 +46,10 @@ class Player(BasePlayer):
                                                   [1, 'Yes'],
                                                 ]
                                               )
-    participant_id = models.StringField(initial = 'NA')
+ #do not CREATE A VARIABLE CALLED PARTicipant id
     survey_id = models.StringField(initial = 'NA')
 
-    payoff = models.FloatField(initial = -1.00)
+    #do not create a variable called payoff
 
     def custom_export(players):
         # header row
@@ -62,9 +66,13 @@ class Player(BasePlayer):
 def creating_session(subsession):
     player_list = subsession.get_players()
     if subsession.round_number == 1:
-        random.shuffle(player_list)
+        # random.shuffle(player_list)
         treatments = itertools.cycle(Constants.treatment_groups)
+        groups = [1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2]
+        index = 1
         for player in player_list:
+            player.group_number = groups.pop(0)
+
             # randomize to treatments
             player.treatment_group = next(treatments)
             print('setting treatment_group to', player.treatment_group, 'for player', player.id_in_group)
@@ -72,7 +80,8 @@ def creating_session(subsession):
     for player in player_list:
         if subsession.round_number != 1:
             player_round1 = player.in_round(1)
-            player.treatment_group = player_round1.treatment
+            player.treatment_group = player_round1.treatment_group
+            player.group_number = player_round1.group_number
 
 def set_final_payoff(player):
     if player.round_number == Constants.num_rounds:
@@ -102,7 +111,14 @@ class instructions(Page):
 class treatment_add_instructions(Page):
     @staticmethod
     def is_displayed(player):
-        return player.treatment_group != "NC", player.round_number == 1
+        return player.round_number == 1 and player.treatment_group != 'NC'
+
+    @staticmethod
+    def vars_for_template(player):
+        return dict(
+            treatment_group = player.treatment_group,
+            round_number = Constants.num_rounds,
+        )
 
 class start_practice(Page):
     @staticmethod
@@ -151,7 +167,7 @@ class task(Page):
 class FC_choose_group(Page):
     @staticmethod
     def is_displayed(player):
-        return player.treatment_group == "FC", player.round_number != 1
+        return player.treatment_group == "FC" and player.round_number != 1
     form_model = 'player'
     form_fields = ['information_display']
 
@@ -161,19 +177,40 @@ class ResultsWaitPage(WaitPage):
     performance_ranking = []
     @staticmethod
     def after_all_players_arrive(subsession):
-        performance_ranking = []
+        performances = []
         for p in subsession.get_players():
             performance = [p.id_in_group,p.num_key_pairs]
-            performance_ranking.append(performance)
-        performance_sorted_by_ranking = sorted(performance_ranking, key = lambda tup:tup[1], reverse=True)
+            performances.append(performance)
+            print('performances is', performances)
+        #split performances by group
+        num_groups = math.ceil(len(subsession.get_players()) / Constants.players_per_group)
+
+        performances_grouped = []
+        index = 0
+        for group in range(num_groups):
+            performance_group = performances[index:index+Constants.players_per_group]
+            performance_group_sorted = sorted(performance_group, key=lambda tup: tup[1], reverse=True)
+            performances_grouped.append(performance_group_sorted)
+            index = index + Constants.players_per_group
+
         for p in subsession.get_players():
-            p.rank = performance_sorted_by_ranking.index([p.id_in_group,p.num_key_pairs]) + 1
-            percentile = (p.rank / Constants.players_per_group)*100
-            p.is_top20 = 1 if percentile <= 20 else 0
-            p.is_top50 = 1 if (20 <= percentile < 50) else 0
-            p.is_bottom50 = 1 if percentile >= 50 else 0
-        print(*performance_ranking)
-        print(*performance_sorted_by_ranking)
+            players_group = performances_grouped[p.group_number-1]
+            p.rank = players_group.index([p.id_in_group, p.num_key_pairs]) + 1
+            p.percentile = (p.rank / Constants.players_per_group) * 100
+            p.is_top20 = 1 if p.percentile <= 20 else 0
+            p.is_top50 = 1 if (20 < p.percentile <= 50) else 0
+            p.is_bottom50 = 1 if p.percentile > 50 else 0
+
+        print('performances_grouped is:', performances_grouped)
+
+
+    @staticmethod
+    def vars_for_template(player):
+        return dict(
+            num_key_pairs = player.num_key_pairs,
+            rank=player.rank,
+            treatment_group = player.treatment_group
+        )
 
 
 

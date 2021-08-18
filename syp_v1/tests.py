@@ -15,35 +15,49 @@ class PlayerBot(Bot):
         case = self.case
         if case == 'success':
             if self.player.treatment_group == 'PC':
-                yield start,
-                yield instructions,
-                yield treatment_add_instructions,
-                yield start_practice,
-                yield demonstration,
-                yield start_practice_2,
-                yield practice_task, dict(num_key_pairs=randint(1,31))
-                yield results_practice
-                yield task, dict(num_key_pairs=randint(1,101))
-                yield Results
+                if self.player.round_number == 1:
+                    yield start,
+                    yield instructions,
+                    yield treatment_add_instructions,
+                    yield start_practice,
+                    yield demonstration,
+                    yield start_practice_2,
+                    yield practice_task, dict(num_key_pairs=randint(1,31))
+                    yield results_practice
+                    yield task, dict(num_key_pairs=randint(1,101))
+                    yield Results
+                else:
+                    yield task, dict(num_key_pairs=randint(1, 101))
+                    yield Results
+
             if self.player.treatment_group == 'FC':
-                yield start,
-                yield instructions,
-                yield treatment_add_instructions,
-                yield start_practice,
-                yield demonstration,
-                yield start_practice_2,
-                yield practice_task, dict(num_key_pairs=randint(1,31))
-                yield results_practice,
-                yield FC_choose_group, dict(information_display=randint(0,1))
-                yield task, dict(num_key_pairs=randint(1,101))
-                yield Results
+                if self.player.round_number == 1:
+                    yield start,
+                    yield instructions,
+                    yield treatment_add_instructions,
+                    yield start_practice,
+                    yield demonstration,
+                    yield start_practice_2,
+                    yield practice_task, dict(num_key_pairs=randint(1,31))
+                    yield results_practice,
+                    yield task, dict(num_key_pairs=randint(1,101))
+                    yield Results
+                else:
+                    yield FC_choose_group, dict(information_display=random.choice([0,1]))
+                    yield task, dict(num_key_pairs=randint(1, 101))
+                    yield Results
+
             if self.player.treatment_group == 'NC':
-                yield start,
-                yield instructions,
-                yield start_practice,
-                yield demonstration,
-                yield start_practice_2,
-                yield practice_task, dict(num_key_pairs=randint(1,31))
-                yield results_practice,
-                yield task, dict(num_key_pairs=randint(1,101))
-                yield Results
+                if self.player.round_number == 1:
+                    yield start,
+                    yield instructions,
+                    yield start_practice,
+                    yield demonstration,
+                    yield start_practice_2,
+                    yield practice_task, dict(num_key_pairs=randint(1,31))
+                    yield results_practice,
+                    yield task, dict(num_key_pairs=randint(1,101))
+                    yield Results
+                else:
+                    yield task, dict(num_key_pairs=randint(1, 101))
+                    yield Results

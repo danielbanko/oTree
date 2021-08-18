@@ -5,8 +5,8 @@ SESSION_CONFIGS = [
         name='syp_v1',
         display_name='DB Decision-Making Study',
         app_sequence=['syp_v1'],
-        num_demo_participants = 2,
-        use_browser_bots=False,
+        num_demo_participants = 20,
+        use_browser_bots=True,
         doc="""
         djb187@pitt.edu SYP project
         """
