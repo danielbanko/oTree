@@ -13,9 +13,10 @@ Code for SYP project
 
 class Constants(BaseConstants):
     name_in_url = 'syp_v1'
-    players_per_group = 10 #will be changed to 9 or 10 later
-    num_rounds = 5
-    payment_rate = 0.02 #two cents per keystroke pair?
+    players_per_group = 10 #should be 10 for actual trials
+    num_practice_rounds = 1
+    num_rounds = 21 #this includes practice rounds
+    payment_rate = 0.02 #two cents per keystroke pair? what is it in other studies?
     # treatment_groups = ['NC'] #for testing purposes
     treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
     showupfee = 6.00
@@ -32,7 +33,7 @@ class Player(BasePlayer):
     treatment_group = models.StringField(initial='NA')
     group_number = models.IntegerField(initial=-1)
     num_key_pairs = models.IntegerField(initial=-1)
-    cum_key_pairs = models.IntegerField(initial=-1)
+    cum_key_pairs = models.IntegerField(initial=0) #not working yet
     practice_round = models.IntegerField(initial=-1)
     percentile = models.FloatField(initial=-1.00)
     is_top20 = models.IntegerField(initial=-1)
@@ -46,29 +47,62 @@ class Player(BasePlayer):
                                                   [1, 'Yes'],
                                                 ]
                                               )
- #do not CREATE A VARIABLE CALLED PARTicipant id
     survey_id = models.StringField(initial = 'NA')
-
-    #do not create a variable called payoff
+ #DO NOT CREATE A VARIABLE CALLED PARTICIPANT_ID OR PAYOFF
+ #do not create a variable called payoff
 
     def custom_export(players):
         # header row
-        yield ['session', 'participant_code', 'round_number', 'id_in_group', 'payoff', 'treatment_group']
+        yield ['session', 'participant_code', 'round_number', 'id_in_group', 'payoff', 'treatment_group', 'rank', 'num_key_pairs', 'cum_key_pairs', ]
         for p in players:
             participant = p.participant
             session = p.session
-            yield [session.code, participant.code, p.round_number, p.id_in_group, p.payoff, p.treatment_group]
+            yield [session.code, participant.code, p.round_number, p.id_in_group, p.payoff, p.treatment_group, p.rank, p.num_key_pairs, p.cum_key_pairs]
 
 
 #---------------------------------------------------------
 #custom methods
 
 def creating_session(subsession):
+    # Use this code to figure out how to import practice rounds:
+    # # copy values from constant parameter table into player model
+    # parameters_for_round = {key: int(value) for key, value in
+    #                         Constants.round_parameters[subsession.round_number - 1].items()}
+    # for player in subsession.get_players():
+    #     player.task = parameters_for_round['task']
+    #     player.round_in_task = parameters_for_round['round_in_task']
+    #     player.init_in_task = parameters_for_round['init_in_task']
+    #     player.last_in_task = parameters_for_round['last_in_task']
+    #     player.urns_0 = parameters_for_round['urns_0']
+    #     player.urns_1 = parameters_for_round['urns_1']
+    #     player.balls0_urn0 = parameters_for_round['balls0_urn0']
+    #     player.balls1_urn0 = parameters_for_round['balls1_urn0']
+    #     player.balls0_urn1 = parameters_for_round['balls0_urn1']
+    #     player.balls1_urn1 = parameters_for_round['balls1_urn1']
+    #     player.p_urn1 = Fraction(player.urns_1, player.urns_0 + player.urns_1)
+    #     player.p_ball1_urn0 = Fraction(player.balls1_urn0, player.balls0_urn0 + player.balls1_urn0)
+    #     player.p_ball1_urn1 = Fraction(player.balls1_urn1, player.balls0_urn1 + player.balls1_urn1)
+    #
+    #     # get elicitation type from first round
+    #     if subsession.round_number != 1:
+    #         player_round1 = player.in_round(1)
+    #         player.elicit_type = player_round1.elicit_type
+    #
+    #     # realize new state if first round in task, else use previous state
+    #     if subsession.round_number == parameters_for_round['init_in_task']:
+    #         state_realization(player)
+    #     else:
+    #         prev_player = player.in_round(parameters_for_round['init_in_task'])
+    #         player.true_state = prev_player.true_state
+    #     # print('true state for player', player.id_in_subsession, 'in round', player.round_number, 'is', player.true_state)
+    #
+    #     signal_realization(player)
+    #     # print('signal for player', player.id_in_subsession, 'in round', player.round_number, 'is', player.signal)
+
     player_list = subsession.get_players()
     if subsession.round_number == 1:
-        # random.shuffle(player_list)
         treatments = itertools.cycle(Constants.treatment_groups)
-        groups = [1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2]
+        groups = [1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2] #id of the group for each participant (one entry per participant)
         index = 1
         for player in player_list:
             player.group_number = groups.pop(0)
@@ -83,8 +117,13 @@ def creating_session(subsession):
             player.treatment_group = player_round1.treatment_group
             player.group_number = player_round1.group_number
 
+    if subsession.round_number in [1]:
+        for player in player_list:
+            player.practice_round = 1 #should have just one practice_round
+
+
 def set_final_payoff(player):
-    if player.round_number == Constants.num_rounds:
+    if player.round_number == Constants.num_rounds: #in final round
         player.payoff = player.cum_key_pairs*Constants.payment_rate + Constants.showupfee
         return player.payoff
 
@@ -123,23 +162,23 @@ class treatment_add_instructions(Page):
 class start_practice(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
-
-class demonstration(Page):
-    @staticmethod
-    def is_displayed(player):
-        return player.round_number == 1
-
+        return player.practice_round == 1
 
 class start_practice_2(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        return player.practice_round == 1
+
+
+class start_practice_3(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.practice_round == 1
 
 class practice_task(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        return player.practice_round == 1
 
     form_model = 'player'
     form_fields = ['num_key_pairs']
@@ -148,11 +187,10 @@ class practice_task(Page):
 class results_practice(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        return player.practice_round == 1
 
     @staticmethod
     def vars_for_template(player):
-        player.practice_round = 1
         return dict(
             rank=player.rank,
             practice_round = player.practice_round
@@ -161,13 +199,22 @@ class results_practice(Page):
 class task(Page):
     form_model = 'player'
     form_fields = ['num_key_pairs']
-    timeout_seconds = 120
+    timeout_seconds = 120 #number of seconds to complete the task
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        player.cum_key_pairs = player.cum_key_pairs + player.num_key_pairs
+        #need to pass this across rounds. not working.
+
+    @staticmethod
+    def is_displayed(player):
+        return player.practice_round != 1
 
 
 class FC_choose_group(Page):
     @staticmethod
     def is_displayed(player):
-        return player.treatment_group == "FC" and player.round_number != 1
+        return player.treatment_group == "FC" and player.practice_round != 1
     form_model = 'player'
     form_fields = ['information_display']
 
@@ -182,6 +229,7 @@ class ResultsWaitPage(WaitPage):
             performance = [p.id_in_group,p.num_key_pairs]
             performances.append(performance)
             print('performances is', performances)
+
         #split performances by group
         num_groups = math.ceil(len(subsession.get_players()) / Constants.players_per_group)
 
@@ -222,6 +270,9 @@ class Results(Page):
             rank=player.rank,
             treatment_group = player.treatment_group
         )
+    @staticmethod
+    def is_displayed(player):
+        return player.practice_round != 1
 
 class survey(Page):
     @staticmethod
@@ -233,8 +284,8 @@ page_sequence = [
     instructions,
     treatment_add_instructions,
     start_practice,
-    demonstration,
     start_practice_2,
+    start_practice_3,
     practice_task,
     ResultsWaitPage,
     results_practice,
