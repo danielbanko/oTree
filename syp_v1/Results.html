@@ -10,26 +10,26 @@ Your total is {{ player.num_key_pairs }}.
 {{ if player.treatment_group == "FC" }}
 	{{ if player.information_display == 1 }}
 		{{ if player.is_top20 == 1 }}
-			Last round you scored in the top 20th percentile of peers.
+			This round you scored in the top 20th percentile of peers.
 		{{ endif }}
 		{{ if player.is_top50 == 1 }}
-			Last round you scored in the top 50th percentile of peers.
+			This round you scored in the top 50th percentile of peers.
 		{{ endif }}
 		{{ if player.is_bottom50 == 1 }}
-		Last round you scored in the bottom 50th percentile of peers.
+			This round scored in the bottom 50th percentile of peers.
 		{{ endif }}
 	{{ endif }}
 {{ endif }}
 
 {{ if player.treatment_group == "PC" }}
 	{{ if player.is_top20 == 1 }}
-		Last round you scored in the top 20th percentile of peers.
+			This round you scored in the top 20th percentile of peers.
 	{{ endif }}
 	{{ if player.is_top50 == 1 }}
-		Last round you scored in the top 50th percentile of peers.
+			This round you scored in the top 50th percentile of peers.
 	{{ endif }}
 	{{ if player.is_bottom50 == 1 }}
-		Last round you scored in the bottom 50th percentile of peers.
+			This round you scored in the bottom 50th percentile of peers.
 	{{ endif }}
 {{ endif }}
 

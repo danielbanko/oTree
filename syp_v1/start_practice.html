@@ -4,8 +4,8 @@
 
 {{ block content }}
 <ul>
-    <li>The next two screens are for practice purposes. First you will get familiar with the screen, which is exactly as it is int he rounds for payment: it will guide you to know which key to press, indicates how many pairs you already pressed, and the total amount earned.</li>
-    <li>Next, you will get to practice the task for 30 seconds. However, since this is a practice round it will not count towards your earnings and you will not be shown your relative performance.</li>
+    <li>The next two screens are for practice purposes. First you will get familiar with the screen, which is exactly the same as it is in the payment rounds: it will guide you to know which key to press, indicates how many pairs you already pressed, and the total amount earned.</li>
+    <li>Next, you will get to practice the task for 30 seconds. However, since this is a practice round it will not count towards your earnings{{ if player.treatment_group == "FC" or player.treatment_group == "PC" }} and you will not be shown your relative performance {{ endif }}.</li>
 
 </ul>
 

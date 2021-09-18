@@ -1,14 +1,27 @@
 
-
 {{ block title }}
-   Practice Task
+   Key-Press Practice
 {{ endblock }}
 
 {{ block content }}
+<link rel="stylesheet" type="text/css" href="{{ static 'global/task.css' }}"/>
 
-<input type="hidden" name="num_key_pairs" id="num_key_pairs" />
-Your total is: <p id = "score"></p>
-<!--{{ form.num_key_pairs.errors }}-->
+<div id = "earnings_information">
+    <div id = "earnings_information_left" >
+          <div id = "next_key_to_press_text">
+                To earn, please press:
+          </div>
+          <div id = "next_key_to_press_box">
+                <p id ="next_key_to_press">Z</p>
+          </div>
+    </div>
+    <input type="hidden" name="num_key_pairs" id="num_key_pairs" />
+    <div id = "num_key_pairs_box" >
+      Total number of pairs in this round: <p id = "score"></p>
+    </div>
+</div>
+
+{{ form.num_key_pairs.errors }}
 
 {{ next_button }}
 
@@ -24,6 +37,19 @@ document.addEventListener("keydown", function (event) {
   const key = event.key.toLowerCase();
   keys.push( event.keyCode );
   console.log(keys);
+
+  if (event.keyCode == 90) {
+    document.getElementById("next_key_to_press").innerHTML = "X";
+  } else {
+    console.log('Z was not pressed');
+  }
+
+  if (event.keyCode == 88) {
+    document.getElementById("next_key_to_press").innerHTML = "Z";
+  } else {
+    console.log('X was not pressed');
+  }
+
 
   if (keys.toString().indexOf( charList ) >= 0 ) {
     console.log("You pressed the correct sequence" );

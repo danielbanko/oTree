@@ -1,0 +1,49 @@
+#timer_box {
+  text-align:center;
+}
+
+#earnings_information {
+    float:left;
+    width:100%;
+    height:200px;
+}
+
+#earnings_information_left {
+    float:left;
+    width:21%;
+    height:200px;
+}
+
+p {
+    margin-top: initial;
+    margin-bottom: initial;
+}
+
+#next_key_to_press_box {
+  color: black;
+  border-width:2px;
+  border-style:solid;
+  border-color:black;
+  width: 200px;
+  height: 100px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+#next_key_to_press {
+  display: inline-block;
+  font-size: 25px;
+}
+
+#next_key_to_press_text {
+    text-align: center;
+}
+
+#num_key_pairs_box {
+  float: right;
+}
+
+#score {
+  text-align: center;
+}
