@@ -5,34 +5,44 @@
 {{ block content }}
 
 
-Your total is {{ player.num_key_pairs }}.
+You completed {{ player.num_key_pairs }} in this round.
+
+{{ if player.round_number!=Constants.num_rounds }} There are {{ num_rounds_remaining }} rounds remaining. {{ endif }}
+{{ if player.round_number== Constants.num_rounds }} This was the last round. {{ endif }}
+
 
 {{ if player.treatment_group == "FC" }}
 	{{ if player.information_display == 1 }}
 		{{ if player.is_top20 == 1 }}
-			This round you scored in the top 20th percentile of peers.
+			You scored in the top 20th percentile of participants in your group in this round.
 		{{ endif }}
 		{{ if player.is_top50 == 1 }}
-			This round you scored in the top 50th percentile of peers.
+			You scored in the top 50th percentile of participants in your group in this round.
 		{{ endif }}
 		{{ if player.is_bottom50 == 1 }}
-			This round scored in the bottom 50th percentile of peers.
+			You scored in the bottom 50th percentile of participants in your group in this round.
 		{{ endif }}
 	{{ endif }}
 {{ endif }}
 
 {{ if player.treatment_group == "PC" }}
 	{{ if player.is_top20 == 1 }}
-			This round you scored in the top 20th percentile of peers.
+			You scored in the top 20th percentile of participants in your group in this round.
 	{{ endif }}
 	{{ if player.is_top50 == 1 }}
-			This round you scored in the top 50th percentile of peers.
+			You scored in the top 50th percentile of participants in your group in this round.
 	{{ endif }}
 	{{ if player.is_bottom50 == 1 }}
-			This round you scored in the bottom 50th percentile of peers.
+			You scored in the bottom 50th percentile of participants in your group in this round.
 	{{ endif }}
 {{ endif }}
 
+{{ if player.round_number != Constants.num_rounds }}
+Click "Next" when you are ready to begin the next payment round.
+{{ endif }}
+{{ if player.round_number == Constants.num_rounds }}
+Click "Next" when you are ready to begin the survey.
+{{ endif }}
 
 {{ next_button }}
 

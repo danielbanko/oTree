@@ -1,0 +1,27 @@
+{{ block title }}
+    Instructions
+{{ endblock }}
+
+{{ block content }}
+<b>Payment Information</b>
+<ul>
+    <li>In addition to the $6.00 show-up payment and a $4.00 completion payment for finishing the experiment, one of the performance rounds will be randomly selected (with equal probability) for additional payment based on the number of keyboard tasks completed in that round.</li>
+    <li>Each keyboard pair completed in that round chosen for payment will earn you an additional ${{ Constants.payment_rate }}. </li>
+    <li>As an example, suppose there are only two rounds. A participant completes 10 keyboard pairs in round 1 and 17 keyboard pairs in round 2. At the end of the experiment, round 1 is chosen for payment. That participant's payment will consist of the $6.00 showup fee, the $4.00 completion fee, and ${{ Constants.payment_rate }} for every keyboard pair she completed in round 1, which is 10 pairs. So she earns ${{ Constants.payment_rate }} * 10 = $0.20 from her performance in round 1. Adding the show-up and completion payments, she earns a total of $10.20 in the experiment.
+    <li> If instead round 2 was randomly chosen for payment instead of round 1, that same participant would have earned ${{ Constants.payment_rate }} * 17 = $0.34 for completing 17 pairs in round 2, so she would have earned $10.34 in total.</li>
+    {{ if player.treatment_group == "NC" }}<li>If you have any questions, please let the experimenter know now. Otherwise please proceed by pressing the next button when you are ready to begin the practice round.</li>{{ endif }}
+</ul>
+{{ if player.treatment_group != "NC" }}
+<b>Information Display</b>
+<ul>
+    <li> Before each performance round, you {{ if player.treatment_group == "FC"}} must decide if you want to {{ endif }} {{ if player.treatment_group == "PC" }} will {{ endif }} be shown a private display with information about your relative performance on the task against a group of participants currently taking the experiment and completing the keyboard task at the same time as you. It will be the same participants in the group in all performance rounds. You will be truthfully told either you placed in the top 20%, top 50%, or bottom 50% of participants in that group based on the number of keyboard presses each participant completed in that round.</li>
+    <li><b>It is important to note that this information {{ if player.treatment_group == "FC" }} or your decision to opt in or out of this information {{ endif }} will not affect your earnings. All of the earnings information is described above in the Payment Information section.</b></li>
+    <li>This information is privately shown to you and no other participant receives information about your relative performance. Every participant is only receiving information about their own relative performance.</li>
+    <li>As an example, suppose there are three participants randomly placed into the same comparison group: Participant A, Participant B, and Participant C. All three participants complete one performance round of the keyboard pressing task. Participant A completed 96 key pairs, Participant B completed 75 key pairs, and Participant C completed 120 key pairs in that round. Participant A will be informed that they placed in the top 50% of participants, Participant B will be informed that they placed in the bottom 50% of participants, and Participant C will be informed that they placed in the top 20% of participants in their group.</li>
+    <li>If you have any questions, please let the experimenter know. Otherwise please proceed by pressing the "Next" button when you are ready to begin the practice round.</li>
+</ul>
+{{ endif }}
+
+    {{ next_button }}
+
+{{ endblock }}

@@ -4,8 +4,29 @@
 
 {{ block content }}
 
-This is how the performance screen in the actual study looks like. Take a moment to learn it. When you are done, press continue below.
+This is how the performance screen in the actual study looks like. Take a moment to learn it. When you are ready, press "Next" to continue to the practice round.
+<br>
+<br>
+    timeout_seconds = 30
+    timer_text = 'Time left:'
+<hr>
 
+<link rel="stylesheet" type="text/css" href="{{ static 'global/task.css' }}"/>
+
+<div id = "earnings_information">
+    <div id = "earnings_information_left" >
+          <div id = "next_key_to_press_text">
+                To earn, please press on your keyboard:
+          </div>
+          <div id = "next_key_to_press_box">
+              <p id ="next_key_to_press" style="color:red;">Z</p><p style="font-size:16px; color:red;">(will update automatically with the next key to press)</p>
+          </div>
+    </div>
+    <input type="hidden" name="num_key_pairs" id="num_key_pairs" />
+    <div id = "num_key_pairs_box" >
+        Total number of pairs completed in this round:<p id = "score" style="color:red;"> 16 </p><p style="font-size:16px; color:red;">(will update automatically as you complete more pairs)</p>
+    </div>
+</div>
 
 {{ next_button }}
 

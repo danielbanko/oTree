@@ -16,7 +16,7 @@ class Constants(BaseConstants):
     players_per_group = 10 #this has to be 10, otherwise breaks
     num_practice_rounds = 1
     num_rounds = 6 #this includes practice rounds
-    payment_rate = 0.05 #ten or two cents per keystroke pair? what is it in other studies?
+    payment_rate = 0.02 #ten or two cents per keystroke pair? what is it in other studies?
     # treatment_groups = ['NC'] #for testing purposes
     treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
     showupfee = 6.00
@@ -119,10 +119,10 @@ class instructions(Page):
     def is_displayed(self):
         return self.round_number == 1
 
-class treatment_add_instructions(Page):
+class payment_treatment_instructions(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1 and player.treatment_group != 'NC'
+        return player.round_number == 1
 
     @staticmethod
     def vars_for_template(player):
@@ -151,7 +151,7 @@ class practice_task(Page):
     @staticmethod
     def is_displayed(player):
         return player.practice_round == 1
-    timeout_seconds = 30 #TODO TURN THIS BACK ON
+    timeout_seconds = 30
     timer_text = 'Time left:'
     form_model = 'player'
     form_fields = ['num_key_pairs']
@@ -256,6 +256,12 @@ class Results(Page):
     def is_displayed(player):
         return player.practice_round != 1
 
+class start_survey(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == Constants.num_rounds
+
+
 class survey(Page):
     @staticmethod
     def is_displayed(player):
@@ -269,7 +275,7 @@ class payment_information(Page):
 page_sequence = [
     start_experiment,
     instructions,
-    treatment_add_instructions,
+    payment_treatment_instructions,
     start_practice,
     start_practice_2,
     start_practice_3,
