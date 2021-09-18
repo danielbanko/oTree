@@ -7,8 +7,9 @@
 
 You completed {{ player.num_key_pairs }} in this round.
 
-{{ if player.round_number!=Constants.num_rounds }} There are {{ num_rounds_remaining }} rounds remaining. {{ endif }}
-{{ if player.round_number== Constants.num_rounds }} This was the last round. {{ endif }}
+{{ if player.round_number == Constants.num_rounds }}
+This was the last round.{{ else }}There are {{ num_rounds_remaining }} rounds remaining.
+{{ endif }}
 
 
 {{ if player.treatment_group == "FC" }}
@@ -37,12 +38,13 @@ You completed {{ player.num_key_pairs }} in this round.
 	{{ endif }}
 {{ endif }}
 
-{{ if player.round_number != Constants.num_rounds }}
-Click "Next" when you are ready to begin the next payment round.
-{{ endif }}
+
 {{ if player.round_number == Constants.num_rounds }}
 Click "Next" when you are ready to begin the survey.
+{{ else }}
+	Click "Next" when you are ready to begin the next payment round.
 {{ endif }}
+
 
 {{ next_button }}
 
