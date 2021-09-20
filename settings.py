@@ -28,7 +28,12 @@ LANGUAGE_CODE = 'en'
 
 # e.g. EUR, GBP, CNY, JPY
 REAL_WORLD_CURRENCY_CODE = 'USD'
-USE_POINTS = True
+USE_POINTS = False
+# USE_POINTS = True
+
+# environ['OTREE_ADMIN_PASSWORD'] = 'dbanko_syp'
+# environ['OTREE_PRODUCTION'] = '1'
+# environ['OTREE_AUTH_LEVEL']='STUDY'
 
 ADMIN_USERNAME = 'admin'
 # for security, best to set admin password in an environment variable
@@ -40,3 +45,20 @@ SECRET_KEY = '7468549050899'
 
 # if an app is included in SESSION_CONFIGS, you don't need to list it here
 INSTALLED_APPS = ['otree']
+
+
+# OTREE_AUTH_LEVEL = DEMO
+
+
+DEBUG = (environ.get('OTREE_PRODUCTION') in {None, '', '0'})
+AUTH_LEVEL = environ.get('OTREE_AUTH_LEVEL')
+
+ROOMS = [
+    dict(
+        name='peel_virtual',
+        display_name='PEEL (Virtual)',
+        participant_label_file='_rooms/participant_labels_syp.txt',
+        use_secure_urls=True
+    ),
+]
+

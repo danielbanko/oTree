@@ -3,30 +3,42 @@
 {{ endblock }}
 
 {{ block content }}
+<link rel="stylesheet" type="text/css" href="{{ static 'global/result.css' }}"/>
 
 
-You completed {{ player.num_key_pairs }} in this round.
+<p>You completed {{ player.num_key_pairs }} keyboard pairs in this round. </p>
 
-{{ if player.round_number == Constants.num_rounds }}
-This was the last round.{{ else }}There are {{ num_rounds_remaining }} rounds remaining.
-{{ endif }}
+<!--	Here is the history of your keyboard presses:</p>-->
+<!--	<ul>-->
+<!--        {{ for prev_player in player.in_all_rounds() }}-->
+<!--            <li>{{ prev_player.round_number }}: T{{ prev_player.num_key_pairs }} | {{ if prev_player.is_top20 == 1 }} Scored top 20 {{ endif}} </li>-->
+<!--        {{ endfor }}-->
+<!--    </ul>-->
+
 
 
 {{ if player.treatment_group == "FC" }}
 	{{ if player.information_display == 1 }}
+		<div id="information_display_box">
+			<b>Round Performance Comparison</b> | <span id="comparison_text">
 		{{ if player.is_top20 == 1 }}
-			You scored in the top 20th percentile of participants in your group in this round.
+			 You scored in the top 20th percentile of participants in your group in this round.
 		{{ endif }}
 		{{ if player.is_top50 == 1 }}
-			You scored in the top 50th percentile of participants in your group in this round.
+			 You scored in the top 50th percentile of participants in your group in this round.
 		{{ endif }}
 		{{ if player.is_bottom50 == 1 }}
 			You scored in the bottom 50th percentile of participants in your group in this round.
 		{{ endif }}
+		</span>
+		</div>
 	{{ endif }}
+
 {{ endif }}
 
 {{ if player.treatment_group == "PC" }}
+	<div id="information_display_box">
+			<b>Round Performance Comparison</b> | <span id="comparison_text">
 	{{ if player.is_top20 == 1 }}
 			You scored in the top 20th percentile of participants in your group in this round.
 	{{ endif }}
@@ -36,15 +48,24 @@ This was the last round.{{ else }}There are {{ num_rounds_remaining }} rounds re
 	{{ if player.is_bottom50 == 1 }}
 			You scored in the bottom 50th percentile of participants in your group in this round.
 	{{ endif }}
+	</span>
+	</div>
 {{ endif }}
 
 
+<p></p>
+{{ if player.round_number == Constants.num_rounds }}
+<p> This was the last round.{{ else }}There are {{ num_rounds_remaining }} rounds remaining. </p>
+{{ endif }}
+
+<p></p>
+<p>
 {{ if player.round_number == Constants.num_rounds }}
 Click "Next" when you are ready to begin the survey.
 {{ else }}
-	Click "Next" when you are ready to begin the next payment round.
+	Click "Next" when you are ready to begin the next round.
 {{ endif }}
-
+</p>
 
 {{ next_button }}
 

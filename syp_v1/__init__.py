@@ -15,7 +15,7 @@ class Constants(BaseConstants):
     name_in_url = 'syp_v1'
     players_per_group = 10 #this has to be 10, otherwise breaks
     num_practice_rounds = 1
-    num_rounds = 6 #this includes practice rounds
+    num_rounds = 6 #this includes practice rounds. Should be 6?
     payment_rate = 0.02 #ten or two cents per keystroke pair? what is it in other studies?
     # treatment_groups = ['NC'] #for testing purposes
     treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
@@ -41,15 +41,16 @@ class Player(BasePlayer):
     is_top50 = models.IntegerField(initial=-1)
     is_bottom50 = models.IntegerField(initial=-1)
     information_display = models.IntegerField(initial = -1,
-                                              label="Do you want to receive peer information?",
-                                              widget=widgets.RadioSelectHorizontal,
+                                              label="",
+                                              widget=widgets.RadioSelect,
                                               choices = [
-                                                  [0, 'No'],
                                                   [1, 'Yes'],
+                                                  [2, 'No'],
                                                 ]
                                               )
     survey_id = models.StringField(initial = 'NA')
     pay_round = models.IntegerField(initial=-1)
+    piecerate_payment = models.FloatField(initial=-1.00)
 
     survey_1 = models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
        [1, 'Asian'],  # <- correct answer
@@ -143,13 +144,14 @@ def creating_session(subsession):
 
 
 def set_final_payoff(player):
+    import math
     if player.round_number == Constants.num_rounds: #in final round
         # determine random round for payment
         random_round = random.randint(2, Constants.num_rounds)
         player.pay_round = random_round
         player_in_pay_round = player.in_round(random_round)
         player.num_key_pairs = player_in_pay_round.num_key_pairs
-        player.piecerate_payment = player.num_key_pairs*Constants.payment_rate
+        player.piecerate_payment = int(player.num_key_pairs*Constants.payment_rate)
         player.payoff = player.piecerate_payment + Constants.showupfee + Constants.completionfee
         return player.payoff
 
@@ -194,6 +196,8 @@ class start_practice_2(Page):
     @staticmethod
     def is_displayed(player):
         return player.practice_round == 1
+
+    #todo: add timer to the display
 
 
 class start_practice_3(Page):
@@ -305,6 +309,7 @@ class Results(Page):
             num_key_pairs = player.num_key_pairs,
             rank=player.rank,
             treatment_group = player.treatment_group,
+            information_display = player.information_display,
             payoff = player.payoff,
             num_rounds_remaining = Constants.num_rounds - player.round_number
         )
@@ -353,6 +358,8 @@ class payment_information(Page):
     def is_displayed(player):
         return player.round_number == Constants.num_rounds
 
+
+
 page_sequence = [
     start_experiment,
     instructions,
@@ -373,8 +380,10 @@ page_sequence = [
     survey_2,
     payment_information
 ]
-#
+
 # page_sequence = [
+#     task,
+#     FC_choose_group,
+#     ResultsWaitPage,
 #     Results,
-#
 # ]
