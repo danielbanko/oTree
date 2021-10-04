@@ -48,6 +48,7 @@ class Player(BasePlayer):
                                                 ]
                                               )
     survey_id = models.StringField(initial = 'NA')
+<<<<<<< Updated upstream
  #DO NOT CREATE A VARIABLE CALLED PARTICIPANT_ID OR PAYOFF
  #do not create a variable called payoff
 
@@ -58,6 +59,73 @@ class Player(BasePlayer):
             participant = p.participant
             session = p.session
             yield [session.code, participant.code, p.round_number, p.id_in_group, p.payoff, p.treatment_group, p.rank, p.num_key_pairs, p.cum_key_pairs]
+=======
+    pay_round = models.IntegerField(initial=-1)
+    piecerate_payment = models.FloatField(initial=-1.00)
+    participant_label_check = models.StringField(initial = 'NA')
+    survey_1 = models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
+       [1, 'Asian'],  # <- correct answer
+       [2, 'Black'],
+       [3, 'Caucasion'],
+       [4, 'Hispanic'],
+       [5, 'Other']
+    ])
+
+    survey_2 = models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
+       [1, 'Male'],
+       [2, 'Female'],
+       [3, 'Non-binary / third gender'],
+       [4, 'Prefer not to say']
+    ])
+
+    survey_3 = models.IntegerField(null=True, min = 16, max = 100)
+
+    survey_4 = models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
+       [1, 'Extremely liberal'],
+       [2, 'Very liberal'],
+       [3, 'Slightly liberal'],
+       [4, 'Neutral'],
+       [5, 'Slightly conservative'],
+       [6, 'Very conservative'],
+       [7, 'Extremely conservative'],
+    ])
+
+    survey_5= models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
+       [1, 'English'],
+       [2, 'Other'],
+    ])
+
+    survey_6= models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
+       [1, 'Freshman'],
+       [2, 'Sophomore'],
+       [3, 'Junior'],
+       [4, 'Senior'],
+       [5, 'Graduate Student'],
+       [6, 'Other'],
+    ])
+
+    survey_7= models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
+       [1, 'Arts'],
+       [2, 'Business'],
+       [3, 'Humanities'],
+       [4, 'Natural Sciences'],
+       [5, 'Social Sciences'],
+       [6, 'Physical Sciences'],
+       [7, 'Other'],
+    ])
+
+    venmo = models.StringField(initial='NA')
+
+ #DO NOT CREATE A VARIABLE CALLED PARTICIPANT_ID OR PAYOFF breaks things
+
+def custom_export(players):
+    # header row
+    yield ['session', 'participant_code', 'round_number', 'id_in_group', 'payoff', 'treatment_group', 'rank', 'num_key_pairs', 'cum_key_pairs', ]
+    for p in players:
+        participant = p.participant
+        session = p.session
+        yield [session.code, participant.code, p.round_number, p.id_in_group, p.payoff, p.treatment_group, p.rank, p.num_key_pairs, p.cum_key_pairs]
+>>>>>>> Stashed changes
 
 
 #---------------------------------------------------------
@@ -279,6 +347,23 @@ class survey(Page):
     def is_displayed(player):
         return player.round_number == Constants.num_rounds
 
+<<<<<<< Updated upstream
+=======
+class survey_5(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == Constants.num_rounds
+
+class payment_information(Page):
+    form_model = 'player'
+    form_fields = 'participant_label_check'
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == Constants.num_rounds
+
+
+
+>>>>>>> Stashed changes
 page_sequence = [
     start,
     instructions,

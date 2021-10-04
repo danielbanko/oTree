@@ -1,0 +1,40 @@
+{{ block title }}
+	Experiment
+{{ endblock }}
+
+{{ block content }}
+<p> Thank you. This concludes the experiment. </p>
+
+<p> The round chosen for payment was {{ player.pay_round }}. </p>
+
+<p>In round {{ player.pay_round }}, you completed {{ player.num_key_pairs }} pairs on the keyboard. </p>
+
+<p> The earnings rate is ${{ Constants.payment_rate }} per completed keyboard pair. </p>
+
+<p> You earned {{Constants.payment_rate }} * {{ player.num_key_pairs }} = ${{ 0.70 }} from your performance on the keyboard task in round {{ player.pay_round }}. </p>
+
+Your total earnings for today are:
+<table>
+	<tr>
+		<td>${{ Constants.showupfee }}</td>
+		<td>Show-up fee</td>
+	</tr>
+	<tr>
+		<td>$4.00</td>
+		<td>Completion fee</td>
+	</tr>
+		<tr>
+		<td>${{ player.piecerate_payment }}</td><td>Earnings from keyboard task in round {{ player.pay_round }} </td>
+	</tr>
+	<tr>
+		<td><b>{{ player.payoff }}</td><td>Total payment</td>
+	</tr>
+</table>
+	{{ formfield 'participant_label_check' label="Please enter your participant ID" }}
+	{{ next_button }}
+
+
+{{ endblock }}
+
+
+

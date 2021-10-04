@@ -28,7 +28,17 @@ LANGUAGE_CODE = 'en'
 
 # e.g. EUR, GBP, CNY, JPY
 REAL_WORLD_CURRENCY_CODE = 'USD'
+<<<<<<< Updated upstream
 USE_POINTS = True
+=======
+USE_POINTS = False
+# USE_POINTS = True
+
+# Uncomment this when ready to deploy
+environ['OTREE_ADMIN_PASSWORD'] = 'dbanko_syp'
+environ['OTREE_PRODUCTION'] = '1'
+environ['OTREE_AUTH_LEVEL']='STUDY'
+>>>>>>> Stashed changes
 
 ADMIN_USERNAME = 'admin'
 # for security, best to set admin password in an environment variable
