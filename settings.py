@@ -31,6 +31,7 @@ REAL_WORLD_CURRENCY_CODE = 'USD'
 USE_POINTS = False
 # USE_POINTS = True
 
+# uncomment when ready to go to production
 # environ['OTREE_ADMIN_PASSWORD'] = 'dbanko_syp'
 # environ['OTREE_PRODUCTION'] = '1'
 # environ['OTREE_AUTH_LEVEL']='STUDY'
