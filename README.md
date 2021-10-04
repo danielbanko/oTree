@@ -8,3 +8,5 @@ Need to keep track of all keystrokes because need to measure mistakes made.
 if i run multiple sessions on same day, the data downloaded has the same exact name, so could overwrite prior data. need to fix this.
 
 looks like first round is always practice round. need to fix it so that practice round is in addition to the number of rounds specified by num_rounds
+
+Warning: set_final_payoff is defined but not used
