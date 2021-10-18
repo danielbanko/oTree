@@ -21,45 +21,54 @@ class PlayerBot(Bot):
         if case == 'success':
             if self.player.treatment_group == 'PC':
                 if self.player.round_number == 1:
-                    yield start,
+                    yield start_experiment,
                     yield instructions,
-                    yield treatment_add_instructions,
+                    yield payment_treatment_instructions,
                 # elif self.player.practice_round == 1:
                     yield start_practice,
                     yield start_practice_2,
                     yield start_practice_3,
                     yield practice_task, dict(num_key_pairs=randint(1, 31))
-                    yield results_practice
+                    yield results_practice,
+                    yield start_task
                 else:
-                    yield task, dict(num_key_pairs=randint(1, 101))
+                    yield task, dict(num_key_pairs=randint(1, 1001))
                     yield Results
 
             if self.player.treatment_group == 'FC':
                 if self.player.round_number == 1:
-                    yield start,
+                    yield start_experiment,
                     yield instructions,
-                    yield treatment_add_instructions,
+                    yield payment_treatment_instructions,
                 # elif self.player.practice_round == 1:
                     yield start_practice,
                     yield start_practice_2,
                     yield start_practice_3,
                     yield practice_task, dict(num_key_pairs=randint(1, 31))
-                    yield results_practice
+                    yield results_practice,
+                    yield start_task
                 else:
-                    yield FC_choose_group, dict(information_display=random.choice([0,1]))
-                    yield task, dict(num_key_pairs=randint(1, 101))
-                    yield Results
+                    yield FC_choose_group, dict(information_display=random.choice([1,2]))
+                    if self.player.information_display == 1:
+                        yield task, dict(num_key_pairs=randint(1, 1501))
+                        yield Results
+                    else:
+                        yield task, dict(num_key_pairs=randint(1, 1201))
+                        yield Results
+
 
             if self.player.treatment_group == 'NC':
                 if self.player.round_number == 1:
-                    yield start,
+                    yield start_experiment,
                     yield instructions,
+                    yield payment_treatment_instructions,
                 # elif self.player.practice_round == 1:
                     yield start_practice,
                     yield start_practice_2,
                     yield start_practice_3,
                     yield practice_task, dict(num_key_pairs=randint(1, 31))
-                    yield results_practice
+                    yield results_practice,
+                    yield start_task
                 else:
-                    yield task, dict(num_key_pairs=randint(1, 101))
+                    yield task, dict(num_key_pairs=randint(1, 801))
                     yield Results

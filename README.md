@@ -10,3 +10,7 @@ if i run multiple sessions on same day, the data downloaded has the same exact n
 looks like first round is always practice round. need to fix it so that practice round is in addition to the number of rounds specified by num_rounds
 
 Warning: set_final_payoff is defined but not used
+
+make the instructions persistent across page. so participants have access
+
+add a button that participants have to press to see the peer information (better to ensure that they read it)

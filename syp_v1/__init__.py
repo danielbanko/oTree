@@ -15,12 +15,12 @@ class Constants(BaseConstants):
     name_in_url = 'syp_v1'
     players_per_group = 10 #this has to be 10, otherwise breaks
     num_practice_rounds = 1
-    num_rounds = 6 #this includes practice rounds. Should be 6?
+    num_rounds = 11 #this includes num_practice_rounds. Should be 6? 11?
     payment_rate = 0.02 #ten or two cents per keystroke pair? what is it in other studies?
     # treatment_groups = ['NC'] #for testing purposes
     treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
     showupfee = 6.00
-    completionfee = 4.00
+    completionfee = 2.00
 
 class Subsession(BaseSubsession):
     pass
@@ -53,7 +53,7 @@ class Player(BasePlayer):
     piecerate_payment = models.FloatField(initial=-1.00)
 
     survey_1 = models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
-       [1, 'Asian'],  # <- correct answer
+       [1, 'Asian'],
        [2, 'Black'],
        [3, 'Caucasion'],
        [4, 'Hispanic'],
@@ -67,7 +67,7 @@ class Player(BasePlayer):
        [4, 'Prefer not to say']
     ])
 
-    survey_3 = models.IntegerField(null=True, min = 16, max = 100)
+    survey_3 = models.IntegerField(null=True, min = 18, max = 100)
 
     survey_4 = models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
        [1, 'Extremely liberal'],
@@ -103,7 +103,10 @@ class Player(BasePlayer):
        [7, 'Other'],
     ])
 
-    venmo = models.StringField(initial='NA')
+    survey_8 = models.LongStringField(null=True, initial='')
+
+    survey_9 = models.StringField(null=True, initial='')
+
 
  #DO NOT CREATE A VARIABLE CALLED PARTICIPANT_ID OR PAYOFF breaks things
 
@@ -148,10 +151,10 @@ def set_final_payoff(player):
     if player.round_number == Constants.num_rounds: #in final round
         # determine random round for payment
         random_round = random.randint(2, Constants.num_rounds)
-        player.pay_round = random_round
+        # player.pay_round = random_round - 1 #since practice round is round 1. Just remember pay_round does not include practice round
         player_in_pay_round = player.in_round(random_round)
-        player.num_key_pairs = player_in_pay_round.num_key_pairs
-        player.piecerate_payment = int(player.num_key_pairs*Constants.payment_rate)
+        # player.piecerate_payment = int(player_in_pay_round.num_key_pairs*Constants.payment_rate)
+        player.piecerate_payment = 2
         player.payoff = player.piecerate_payment + Constants.showupfee + Constants.completionfee
         return player.payoff
 
@@ -339,16 +342,8 @@ class survey_2(Page):
         return player.round_number == Constants.num_rounds
 
 class survey_3(Page):
-    @staticmethod
-    def is_displayed(player):
-        return player.round_number == Constants.num_rounds
-
-class survey_4(Page):
-    @staticmethod
-    def is_displayed(player):
-        return player.round_number == Constants.num_rounds
-
-class survey_5(Page):
+    form_model = 'player'
+    form_fields = ['survey_8', 'survey_9']
     @staticmethod
     def is_displayed(player):
         return player.round_number == Constants.num_rounds
@@ -360,8 +355,32 @@ class payment_information(Page):
 
 
 
+# page_sequence = [
+#     start_experiment,
+#     ResultsWaitPage,
+#     instructions,
+#     payment_treatment_instructions,
+#     start_practice,
+#     start_practice_2,
+#     start_practice_3,
+#     practice_task,
+#     ResultsWaitPage,
+#     results_practice,
+#     start_task,
+#     FC_choose_group,
+#     task,
+#     ResultsWaitPage,
+#     Results,
+#     start_survey,
+#     survey_1,
+#     survey_2,
+#     survey_3,
+#     payment_information
+# ]
+
 page_sequence = [
     start_experiment,
+    ResultsWaitPage,
     instructions,
     payment_treatment_instructions,
     start_practice,
@@ -375,15 +394,9 @@ page_sequence = [
     task,
     ResultsWaitPage,
     Results,
-    start_survey,
-    survey_1,
-    survey_2,
-    payment_information
-]
 
+]
+#
 # page_sequence = [
-#     task,
-#     FC_choose_group,
-#     ResultsWaitPage,
-#     Results,
+#     payment_information
 # ]
