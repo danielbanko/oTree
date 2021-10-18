@@ -12,10 +12,10 @@ Code for SYP project
 
 
 class Constants(BaseConstants):
-    name_in_url = 'syp_v1'
+    name_in_url = 'syp_v2'
     players_per_group = 10 #this has to be 10, otherwise breaks
     num_practice_rounds = 1
-    num_rounds = 11 #this includes num_practice_rounds. Should be 6? 11?
+    num_rounds = 2 #this includes num_practice_rounds. Should be 6? 11?
     payment_rate = 0.02 #ten or two cents per keystroke pair? what is it in other studies?
     # treatment_groups = ['NC'] #for testing purposes
     treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
@@ -132,8 +132,12 @@ def creating_session(subsession):
             player.group_number = groups.pop(0)
 
             # randomize to treatments
-            player.treatment_group = next(treatments)
-            print('setting treatment_group to', player.treatment_group, 'for player', player.id_in_group)
+            # player.treatment_group = next(treatments)
+
+            #RANDOMIZE AT SESSION LEVEL
+            player.treatment_group = 'NC'
+
+            print('setting treatment_group to', player.treatment_group, 'for participant', player.participant)
 
     for player in player_list:
         if subsession.round_number != 1:
@@ -151,10 +155,9 @@ def set_final_payoff(player):
     if player.round_number == Constants.num_rounds: #in final round
         # determine random round for payment
         random_round = random.randint(2, Constants.num_rounds)
-        # player.pay_round = random_round - 1 #since practice round is round 1. Just remember pay_round does not include practice round
+        player.pay_round = random_round - 1 #since practice round is round 1. Just remember pay_round does not include practice round
         player_in_pay_round = player.in_round(random_round)
-        # player.piecerate_payment = int(player_in_pay_round.num_key_pairs*Constants.payment_rate)
-        player.piecerate_payment = 2
+        player.piecerate_payment = float(player_in_pay_round.num_key_pairs)*float(Constants.payment_rate)
         player.payoff = player.piecerate_payment + Constants.showupfee + Constants.completionfee
         return player.payoff
 
@@ -355,29 +358,6 @@ class payment_information(Page):
 
 
 
-# page_sequence = [
-#     start_experiment,
-#     ResultsWaitPage,
-#     instructions,
-#     payment_treatment_instructions,
-#     start_practice,
-#     start_practice_2,
-#     start_practice_3,
-#     practice_task,
-#     ResultsWaitPage,
-#     results_practice,
-#     start_task,
-#     FC_choose_group,
-#     task,
-#     ResultsWaitPage,
-#     Results,
-#     start_survey,
-#     survey_1,
-#     survey_2,
-#     survey_3,
-#     payment_information
-# ]
-
 page_sequence = [
     start_experiment,
     ResultsWaitPage,
@@ -394,9 +374,16 @@ page_sequence = [
     task,
     ResultsWaitPage,
     Results,
-
+    start_survey,
+    survey_1,
+    survey_2,
+    survey_3,
+    payment_information
 ]
+
 #
 # page_sequence = [
+#     task,
+#     Results,
 #     payment_information
 # ]
