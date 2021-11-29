@@ -1,0 +1,17 @@
+{{ block title }}
+    Instructions
+{{ endblock }}
+
+{{ block content }}
+<b>Information Display</b>
+<ul>
+    <li> Before each performance round, you {{ if player.treatment_group == "FC"}} must decide if you want to {{ endif }} {{ if player.treatment_group == "PC" }} will {{ endif }} be shown a private display with information about your relative performance on the task among other participants.
+    {{ if player.treatment_group == "FC"}} <li>It is important to note that you will be making this decision before the round begins, and the decision cannot subsequently be changed. If you do opt in, after the round is over, you will be truthfully told either you placed in the top 20%, top 50% (but not the top 20%), or bottom 50% of participants based on the number of keyboard presses each participant completed in that round. If you opt out, you will not be shown this information and you will wait for the next round to begin. </li>{{ endif }}
+    {{ if player.treatment_group == "PC"}} <li>After the round is over, you will be truthfully told either you placed in the top 20%, top 50% (but not the top 20%), or bottom 50%, of participants based on the number of keyboard presses each participant completed in that round.</li>{{ endif }}
+    <li>This information about your relative performance will not affect your earnings. Your payment is only dependent on the number of keyboard pairs you complete, not how well you do relative to others.</li>
+    <li>This information is privately shown to you. No other participant receives information about your relative performance. Every participant is only receiving information about their own relative performance.</li>
+    <li>As an example, suppose there are three participants about to start a performance round: Participant A, Participant B, and Participant C. {{ if player.treatment_group == "FC" }} They all opt into receiving information about their relative performance before the round begins. {{ endif }}In the performance round, Participant A completes 960 key pairs, Participant B completes 751 key pairs, and Participant C completes 600 key pairs. On the next page, Participant A will be informed that they placed in the top 20% of participants, Participant B will be informed that they placed in the top 50% (but not top 20%) of participants, and Participant C will be informed that they placed in the bottom 50% of participants.</li>
+    <li>If you have any questions, please let the experimenter know now.</li>
+</ul>
+
+{{ endblock }}

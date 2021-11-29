@@ -19,20 +19,22 @@
 
 {{ if player.treatment_group == "FC" }}
 	{{ if player.information_display == 1 }}
+		You chose to receive information about your relative performance in this round.
 		<div id="information_display_box">
 			<b>Round Performance Comparison</b> | <span id="comparison_text">
 		{{ if player.is_top20 == 1 }}
-			 You scored in the top 20th percentile of participants in your group in this round.
+			 You scored in the top 20% of participants in your group in this round.
 		{{ endif }}
 		{{ if player.is_top50 == 1 }}
-			 You scored in the top 50th percentile of participants in your group in this round.
+			 You scored in the top 50% of participants in your group in this round.
 		{{ endif }}
 		{{ if player.is_bottom50 == 1 }}
-			You scored in the bottom 50th percentile of participants in your group in this round.
+			You scored in the bottom 50% of participants in your group in this round.
 		{{ endif }}
 		</span>
 		</div>
 	{{ endif }}
+	You chose not to receive information about your relative performance in this round.
 
 {{ endif }}
 
@@ -40,13 +42,13 @@
 	<div id="information_display_box">
 			<b>Round Performance Comparison</b> | <span id="comparison_text">
 	{{ if player.is_top20 == 1 }}
-			You scored in the top 20th percentile of participants in your group in this round.
+			You scored in the top 20% of participants in your group in this round.
 	{{ endif }}
 	{{ if player.is_top50 == 1 }}
-			You scored in the top 50th percentile of participants in your group in this round.
+			You scored in the top 50% of participants in your group in this round.
 	{{ endif }}
 	{{ if player.is_bottom50 == 1 }}
-			You scored in the bottom 50th percentile of participants in your group in this round.
+			You scored in the bottom 50% of participants in your group in this round.
 	{{ endif }}
 	</span>
 	</div>
@@ -61,15 +63,9 @@
 <p></p>
 <p>
 {{ if player.round_number == Constants.num_rounds }}
-Click "Next" when you are ready to begin the survey.
-{{ else }}
-	Click "Next" when you are ready to begin the next round.
+We will begin the survey momentarily.
 {{ endif }}
 </p>
-
-{{ next_button }}
-
-
 
 {{ endblock }}
 

@@ -5,10 +5,11 @@ SESSION_CONFIGS = [
         name='syp_v1',
         display_name='DB Decision-Making Study',
         app_sequence=['syp_v1'],
-        num_demo_participants = 20, #should be 20 in actual implementation, must be multiples of 10
-        use_browser_bots=False,
+        num_demo_participants = 21, #should be 21 in actual implementation, must be multiples of 7
+        use_browser_bots=True,
         doc="""
         djb187@pitt.edu SYP project
+        Edit the 'treatment' parameter to change the treatment group to either ['NC'], ['PC'], or ['FC'].
         """
     ),
 ]
@@ -57,7 +58,7 @@ AUTH_LEVEL = environ.get('OTREE_AUTH_LEVEL')
 ROOMS = [
     dict(
         name='peel_virtual',
-        display_name='PEEL (Virtual)',
+        display_name='PEEL',
         participant_label_file='_rooms/participant_labels_syp.txt',
         use_secure_urls=True
     ),

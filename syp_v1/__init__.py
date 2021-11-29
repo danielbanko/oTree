@@ -12,15 +12,16 @@ Code for SYP project
 
 
 class Constants(BaseConstants):
-    name_in_url = 'syp_v2'
-    players_per_group = 10 #this has to be 10, otherwise breaks
+    name_in_url = 'syp_v3'
+    players_per_group = 7
     num_practice_rounds = 1
-    num_rounds = 2 #this includes num_practice_rounds. Should be 6? 11?
+    num_rounds = 11 #this includes num_practice_rounds. Should be 11 when running.
     payment_rate = 0.02 #ten or two cents per keystroke pair? what is it in other studies?
     # treatment_groups = ['NC'] #for testing purposes
-    treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
+    # treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
+    # treatment_groups = session.config['treatment_groups']
     showupfee = 6.00
-    completionfee = 2.00
+    # completionfee = 2.00
 
 class Subsession(BaseSubsession):
     pass
@@ -49,7 +50,8 @@ class Player(BasePlayer):
                                                 ]
                                               )
     survey_id = models.StringField(initial = 'NA')
-    pay_round = models.IntegerField(initial=-1)
+    round_chosen_for_payment = models.IntegerField(initial=-1)
+    performance_round_paid = models.IntegerField(initial=-1)
     piecerate_payment = models.FloatField(initial=-1.00)
 
     survey_1 = models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
@@ -105,7 +107,7 @@ class Player(BasePlayer):
 
     survey_8 = models.LongStringField(null=True, initial='')
 
-    survey_9 = models.StringField(null=True, initial='')
+    # survey_9 = models.StringField(null=True, initial='')
 
 
  #DO NOT CREATE A VARIABLE CALLED PARTICIPANT_ID OR PAYOFF breaks things
@@ -125,8 +127,8 @@ def custom_export(players):
 def creating_session(subsession):
     player_list = subsession.get_players()
     if subsession.round_number == 1:
-        treatments = itertools.cycle(Constants.treatment_groups)
-        groups = [1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2] #id of the group for each participant (one entry per participant) -- requires players_per_group == 10
+        # treatments = itertools.cycle(Constants.treatment_groups)
+        groups = [1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3] #id of the group for each participant (one entry per participant) -- requires players_per_group == 10
         index = 1
         for player in player_list:
             player.group_number = groups.pop(0)
@@ -135,7 +137,7 @@ def creating_session(subsession):
             # player.treatment_group = next(treatments)
 
             #RANDOMIZE AT SESSION LEVEL
-            player.treatment_group = 'NC'
+            player.treatment_group = 'FC'
 
             print('setting treatment_group to', player.treatment_group, 'for participant', player.participant)
 
@@ -154,11 +156,16 @@ def set_final_payoff(player):
     import math
     if player.round_number == Constants.num_rounds: #in final round
         # determine random round for payment
-        random_round = random.randint(2, Constants.num_rounds)
-        player.pay_round = random_round - 1 #since practice round is round 1. Just remember pay_round does not include practice round
-        player_in_pay_round = player.in_round(random_round)
-        player.piecerate_payment = float(player_in_pay_round.num_key_pairs)*float(Constants.payment_rate)
-        player.payoff = player.piecerate_payment + Constants.showupfee + Constants.completionfee
+        # player.round_chosen_for_payment = random.randint(2, Constants.num_rounds)
+        player.round_chosen_for_payment = 11
+        player.performance_round_paid = player.round_chosen_for_payment - 1 #since practice round is round 1. Just remember pay_round does not include practice round
+        player_in_pay_round = player.in_round(player.round_chosen_for_payment)
+        player.piecerate_payment = round(float(player_in_pay_round.num_key_pairs)*float(Constants.payment_rate),2) #fix this
+        print('round chosen is', player.performance_round_paid)
+        print(float(player_in_pay_round.num_key_pairs))
+        print(float(Constants.payment_rate))
+        print(player.piecerate_payment)
+        player.payoff = player.piecerate_payment + Constants.showupfee
         return player.payoff
 
 
@@ -185,6 +192,18 @@ class payment_treatment_instructions(Page):
     @staticmethod
     def is_displayed(player):
         return player.round_number == 1
+
+    @staticmethod
+    def vars_for_template(player):
+        return dict(
+            treatment_group = player.treatment_group,
+            round_number = Constants.num_rounds,
+        )
+
+class information_display_instructions(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1 and player.treatment_group != "NC"
 
     @staticmethod
     def vars_for_template(player):
@@ -279,6 +298,8 @@ class ResultsWaitPage(WaitPage):
 
         performances_grouped = []
         index = 0
+
+        #sort performances top to bottom
         for group in range(num_groups):
             performance_group = performances[index:index+Constants.players_per_group]
             performance_group_sorted = sorted(performance_group, key=lambda tup: tup[1], reverse=True)
@@ -346,7 +367,7 @@ class survey_2(Page):
 
 class survey_3(Page):
     form_model = 'player'
-    form_fields = ['survey_8', 'survey_9']
+    form_fields = ['survey_8']
     @staticmethod
     def is_displayed(player):
         return player.round_number == Constants.num_rounds
@@ -355,17 +376,30 @@ class payment_information(Page):
     @staticmethod
     def is_displayed(player):
         return player.round_number == Constants.num_rounds
+    @staticmethod
+    def vars_for_template(player):
+        return dict(
+            pay_round=player.performance_round_paid,
+            payoff = player.payoff,
+            piecerate_payment = player.piecerate_payment
+        )
 
+class wait_instructions(Page):
+    def is_displayed(self):
+        return self.round_number == 1
 
 
 page_sequence = [
     start_experiment,
     ResultsWaitPage,
-    instructions,
-    payment_treatment_instructions,
-    start_practice,
+    # instructions,
+    # payment_treatment_instructions,
+    # information_display_instructions,
+    # start_practice,
+    wait_instructions,
     start_practice_2,
     start_practice_3,
+    ResultsWaitPage,
     practice_task,
     ResultsWaitPage,
     results_practice,
@@ -374,16 +408,32 @@ page_sequence = [
     task,
     ResultsWaitPage,
     Results,
-    start_survey,
+    # start_survey,
     survey_1,
     survey_2,
     survey_3,
     payment_information
 ]
 
-#
 # page_sequence = [
+#     start_experiment,
+#     ResultsWaitPage,
+#     # instructions,
+#     # payment_treatment_instructions,
+#     # information_display_instructions,
+#     # start_practice,
+#     start_practice_2,
+#     ResultsWaitPage,
+#     practice_task,
+#     ResultsWaitPage,
+#     results_practice,
+#     FC_choose_group,
 #     task,
+#     ResultsWaitPage,
 #     Results,
+#     # start_survey,
+#     survey_1,
+#     survey_2,
+#     survey_3,
 #     payment_information
 # ]

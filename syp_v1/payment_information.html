@@ -1,17 +1,17 @@
 {{ block title }}
-	Experiment
+	Your label is: {{ participant.label }}
 {{ endblock }}
 
 {{ block content }}
-<p> Thank you. This concludes the experiment. </p>
+<p> This concludes the experiment. Thank you for your participation. </p>
 
-<p> The round chosen for payment was {{ player.pay_round }}. </p>
+<p> The performance round chosen for payment was {{ player.performance_round_paid }}. </p>
 
-<p>In pay round {{ player.pay_round }}, you completed {{ player.num_key_pairs }} pairs on the keyboard. </p>
+<p>In pay round {{ player.performance_round_paid }}, you completed {{ player.num_key_pairs }} pairs on the keyboard. </p>
 
 <p> The earnings rate is ${{ Constants.payment_rate }} per completed keyboard pair. </p>
 
-<p> You earned {{Constants.payment_rate }} * {{ player.num_key_pairs }} = ${{ player.piecerate_payment }} from your performance on the keyboard task in round {{ player.pay_round }}. </p>
+<p> You earned ${{ player.piecerate_payment }} from your performance on the keyboard task in round {{ player.performance_round_paid }}. </p>
 
 Your total earnings for today are:
 <table>
@@ -19,19 +19,19 @@ Your total earnings for today are:
 		<td>${{ Constants.showupfee }}</td>
 		<td>Show-up fee</td>
 	</tr>
-	<tr>
-		<td>$2.00</td>
-		<td>Completion fee</td>
-	</tr>
+<!--	<tr>-->
+<!--		<td>$2.00</td>-->
+<!--		<td>Completion fee</td>-->
+<!--	</tr>-->
 		<tr>
-		<td>${{ player.piecerate_payment }}</td><td>Earnings from keyboard task in round {{ player.pay_round }} </td>
+		<td>${{ player.piecerate_payment }}</td><td>Earnings from keyboard task in round {{ player.performance_round_paid }} </td>
 	</tr>
 	<tr>
 		<td><b>{{ player.payoff }}</td><td>Total payment</td>
 	</tr>
 </table>
 
-Please wait for your label to be called to receive your payment. Your label is: {{ participant.label }}
+Please wait for your label to be called to receive your payment.
 
 
 {{ endblock }}
