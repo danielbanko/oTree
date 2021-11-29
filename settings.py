@@ -6,7 +6,7 @@ SESSION_CONFIGS = [
         display_name='DB Decision-Making Study',
         app_sequence=['syp_v1'],
         num_demo_participants = 21, #should be 21 in actual implementation, must be multiples of 7
-        use_browser_bots=True,
+        use_browser_bots=False,
         doc="""
         djb187@pitt.edu SYP project
         Edit the 'treatment' parameter to change the treatment group to either ['NC'], ['PC'], or ['FC'].
