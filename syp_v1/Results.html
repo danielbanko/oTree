@@ -1,5 +1,5 @@
 {{ block title }}
-	Round Summary
+	Round {{ performance_round }} of {{ total_performance_rounds }} Summary
 {{ endblock }}
 
 {{ block content }}
@@ -33,9 +33,9 @@
 		{{ endif }}
 		</span>
 		</div>
-	{{ endif }}
+	{{ else }}
 	You chose not to receive information about your relative performance in this round.
-
+	{{ endif }}
 {{ endif }}
 
 {{ if player.treatment_group == "PC" }}
@@ -63,7 +63,7 @@
 <p></p>
 <p>
 {{ if player.round_number == Constants.num_rounds }}
-We will begin the survey momentarily.
+We will begin the next part of the experiment momentarily.
 {{ endif }}
 </p>
 

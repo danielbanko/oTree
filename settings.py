@@ -57,10 +57,10 @@ AUTH_LEVEL = environ.get('OTREE_AUTH_LEVEL')
 
 ROOMS = [
     dict(
-        name='peel_virtual',
-        display_name='PEEL',
-        participant_label_file='_rooms/participant_labels_syp.txt',
-        use_secure_urls=True
+        name='peel',
+        display_name='PEEL Lab',
+        participant_label_file='_rooms/peel.txt',
+        use_secure_urls=False
     ),
 ]
 

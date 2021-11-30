@@ -26,18 +26,32 @@ let keys = [];
 let series = [];
 let total = 0;
 
+/* function handleKeyPress(evt) {
+  let { keyCode, type } = evt || Event; // to deal with IE
+  let isKeyUp = (type == 'keyup');
+  keys[keyCode] = isKeyUp;
+
+ if(isKeyUp && keys[88] && keys[90]){
+    console.log('both keys pressed')
+  }
+}; */
+
 let lastKeyTime = Date.now();
-document.addEventListener("keydown", function (event) {
+document.addEventListener("keyup", function (event) {
   const charList = '90,88';
   const key = event.key.toLowerCase();
   keys.push( event.keyCode );
   console.log(keys);
+
+
 
   if (event.keyCode == 90) {
     document.getElementById("next_key_to_press").innerHTML = "X";
   } else {
     console.log('Z was not pressed');
   }
+
+
 
   if (event.keyCode == 88) {
     document.getElementById("next_key_to_press").innerHTML = "Z";

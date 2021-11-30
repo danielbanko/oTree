@@ -15,7 +15,7 @@ class Constants(BaseConstants):
     name_in_url = 'syp_v3'
     players_per_group = 7
     num_practice_rounds = 1
-    num_rounds = 11 #this includes num_practice_rounds. Should be 11 when running.
+    num_rounds = 7 #this includes num_practice_rounds. Should be 7 when running.
     payment_rate = 0.02 #ten or two cents per keystroke pair? what is it in other studies?
     # treatment_groups = ['NC'] #for testing purposes
     # treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
@@ -53,11 +53,12 @@ class Player(BasePlayer):
     round_chosen_for_payment = models.IntegerField(initial=-1)
     performance_round_paid = models.IntegerField(initial=-1)
     piecerate_payment = models.FloatField(initial=-1.00)
+    performance_round = models.IntegerField(initial=-1)
 
     survey_1 = models.IntegerField(initial=-1, widget=widgets.RadioSelect, choices=[
        [1, 'Asian'],
        [2, 'Black'],
-       [3, 'Caucasion'],
+       [3, 'Caucasian'],
        [4, 'Hispanic'],
        [5, 'Other']
     ])
@@ -156,8 +157,7 @@ def set_final_payoff(player):
     import math
     if player.round_number == Constants.num_rounds: #in final round
         # determine random round for payment
-        # player.round_chosen_for_payment = random.randint(2, Constants.num_rounds)
-        player.round_chosen_for_payment = 11
+        player.round_chosen_for_payment = random.randint(2, Constants.num_rounds)
         player.performance_round_paid = player.round_chosen_for_payment - 1 #since practice round is round 1. Just remember pay_round does not include practice round
         player_in_pay_round = player.in_round(player.round_chosen_for_payment)
         player.piecerate_payment = round(float(player_in_pay_round.num_key_pairs)*float(Constants.payment_rate),2) #fix this
@@ -338,7 +338,9 @@ class Results(Page):
             treatment_group = player.treatment_group,
             information_display = player.information_display,
             payoff = player.payoff,
-            num_rounds_remaining = Constants.num_rounds - player.round_number
+            num_rounds_remaining = Constants.num_rounds - player.round_number,
+            performance_round = player.round_number-1,
+            total_performance_rounds = Constants.num_rounds - 1
         )
     @staticmethod
     def is_displayed(player):
@@ -392,11 +394,10 @@ class wait_instructions(Page):
 page_sequence = [
     start_experiment,
     ResultsWaitPage,
-    # instructions,
-    # payment_treatment_instructions,
-    # information_display_instructions,
-    # start_practice,
-    wait_instructions,
+    instructions,
+    payment_treatment_instructions,
+    information_display_instructions,
+    start_practice,
     start_practice_2,
     start_practice_3,
     ResultsWaitPage,
@@ -408,7 +409,7 @@ page_sequence = [
     task,
     ResultsWaitPage,
     Results,
-    # start_survey,
+    start_survey,
     survey_1,
     survey_2,
     survey_3,
