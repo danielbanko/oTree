@@ -23,8 +23,18 @@ class Constants(BaseConstants):
     showupfee = 6.00
     # completionfee = 2.00
 
+
 class Subsession(BaseSubsession):
-    pass
+    def creating_session(self):
+        Seats = [1, 3, 4, 6]
+        Groups = [k for k in range(1, 7)]
+        labels = ['ECLAB' + str(x) + str(y) for x in Groups for y in Seats]
+        # labels.remove('ECLAB54')
+        # labels.insert(1, 'ECLAB12')
+
+        for p, label in zip(self.get_players(), labels):
+            p.participant.label = label
+
 
 class Group(BaseGroup):
     pass
