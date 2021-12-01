@@ -128,7 +128,18 @@ def custom_export(players):
 #custom methods
 
 def creating_session(subsession):
+    Seats = [1, 3, 4, 6]
+    Groups = [k for k in range(1, 7)]
+    labels = ['ECLAB' + str(x) + str(y) for x in Groups for y in Seats]
+    print(labels)
+    # labels.remove('ECLAB54')
+    # labels.insert(1, 'ECLAB12')
+
+    for p, label in zip(subsession.get_players(), labels):
+        p.participant.label = label
+
     player_list = subsession.get_players()
+
     if subsession.round_number == 1:
         # treatments = itertools.cycle(Constants.treatment_groups)
         groups = [1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3] #id of the group for each participant (one entry per participant) -- requires players_per_group == 10
@@ -153,16 +164,8 @@ def creating_session(subsession):
     if subsession.round_number in [1]:
         for player in player_list:
             player.practice_round = 1 #this must always be 1
-    
-    Seats = [1, 3, 4, 6]
-    Groups = [k for k in range(1, 7)]
-    labels = ['ECLAB' + str(x) + str(y) for x in Groups for y in Seats]
-    print(labels)
-    # labels.remove('ECLAB54')
-    # labels.insert(1, 'ECLAB12')
 
-    for p, label in zip(subsession.get_players(), labels):
-        p.participant.label = label      
+
 
 
 def set_final_payoff(player):
