@@ -16,7 +16,7 @@ class Constants(BaseConstants):
     players_per_group = 7
     num_practice_rounds = 1
     num_rounds = 7 #this includes num_practice_rounds. Should be 7 when running.
-    payment_rate = 0.02 #ten or two cents per keystroke pair? what is it in other studies?
+    payment_rate = 0.015 #ten or two cents per keystroke pair? what is it in other studies?
     # treatment_groups = ['NC'] #for testing purposes
     # treatment_groups = ['NC', 'PC', 'FC'] #for actual implementation
     # treatment_groups = session.config['treatment_groups']
@@ -295,7 +295,18 @@ class FC_choose_group(Page):
         return player.treatment_group == "FC" and player.practice_round != 1
     form_model = 'player'
     form_fields = ['information_display']
-
+    @staticmethod
+    def vars_for_template(player):
+        return dict(
+            num_key_pairs = player.num_key_pairs,
+            rank=player.rank,
+            treatment_group = player.treatment_group,
+            information_display = player.information_display,
+            payoff = player.payoff,
+            num_rounds_remaining = Constants.num_rounds - player.round_number,
+            performance_round = player.round_number-1,
+            total_performance_rounds = Constants.num_rounds - 1
+        )
 
 class ResultsWaitPage(WaitPage):
     wait_for_all_groups = True
