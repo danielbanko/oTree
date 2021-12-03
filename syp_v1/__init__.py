@@ -151,7 +151,7 @@ def creating_session(subsession):
             # player.treatment_group = next(treatments)
 
             #RANDOMIZE AT SESSION LEVEL
-            player.treatment_group = 'FC'
+            player.treatment_group = 'PC'
 
             print('setting treatment_group to', player.treatment_group, 'for participant', player.participant)
 
