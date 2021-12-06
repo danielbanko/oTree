@@ -152,7 +152,7 @@ def creating_session(subsession):
             # player.treatment_group = next(treatments)
 
             #RANDOMIZE AT SESSION LEVEL
-            player.treatment_group = 'PC'
+            player.treatment_group = 'NC'
 
             print('setting treatment_group to', player.treatment_group, 'for participant', player.participant)
 
@@ -420,6 +420,32 @@ class wait_instructions(Page):
         return self.round_number == 1
 
 
+page_sequence = [
+    start_experiment,
+    ResultsWaitPage,
+    instructions,
+    payment_treatment_instructions,
+    information_display_instructions,
+    start_practice,
+    start_practice_2,
+    start_practice_3,
+    ResultsWaitPage,
+    practice_task,
+    ResultsWaitPage,
+    results_practice,
+    start_task,
+    FC_choose_group,
+    task,
+    ResultsWaitPage,
+    Results,
+    start_survey,
+    survey_1,
+    survey_2,
+    survey_3,
+    payment_information
+]
+
+#For bot testing:
 # page_sequence = [
     # start_experiment,
     # ResultsWaitPage,
@@ -428,12 +454,9 @@ class wait_instructions(Page):
     # information_display_instructions,
     # start_practice,
     # start_practice_2,
-    # start_practice_3,
-    # ResultsWaitPage,
     # practice_task,
     # ResultsWaitPage,
     # results_practice,
-    # start_task,
     # FC_choose_group,
     # task,
     # ResultsWaitPage,
@@ -444,26 +467,3 @@ class wait_instructions(Page):
     # survey_3,
     # payment_information
 # ]
-
-#For bot testing:
-page_sequence = [
-    start_experiment,
-    ResultsWaitPage,
-    # instructions,
-    # payment_treatment_instructions,
-    # information_display_instructions,
-    # start_practice,
-    # start_practice_2,
-    practice_task,
-    ResultsWaitPage,
-    # results_practice,
-    # FC_choose_group,
-    task,
-    ResultsWaitPage,
-    # Results,
-    # start_survey,
-    survey_1,
-    survey_2,
-    survey_3,
-    payment_information
-]
