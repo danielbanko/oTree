@@ -178,7 +178,8 @@ def set_final_payoff(player):
         print('performance round chosen is', player.performance_round_paid)
         player_in_pay_round = player.in_round(player.round_chosen_for_payment)
         player.num_key_paid = player_in_pay_round.num_key_pairs
-        player.piecerate_payment = round(float(player.num_key_paid)*float(Constants.payment_rate),2)
+        output = round(float(player.num_key_paid)*float(Constants.payment_rate),3) #account for floating arithmetic rounding issues
+        player.piecerate_payment = round(output, 2)
         print(float(player.num_key_paid))
         print(float(Constants.payment_rate))
         print(player.piecerate_payment)
