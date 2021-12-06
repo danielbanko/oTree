@@ -53,6 +53,7 @@ class Player(BasePlayer):
                                               )
     survey_id = models.StringField(initial = 'NA')
     round_chosen_for_payment = models.IntegerField(initial=-1)
+    num_key_paid = models.IntegerField(initial=-1)
     performance_round_paid = models.IntegerField(initial=-1)
     piecerate_payment = models.FloatField(initial=-1.00)
     performance_round = models.IntegerField(initial=-1)
@@ -174,9 +175,10 @@ def set_final_payoff(player):
         # determine random round for payment
         player.round_chosen_for_payment = random.randint(2, Constants.num_rounds)
         player.performance_round_paid = player.round_chosen_for_payment - 1 #since practice round is round 1. Just remember pay_round does not include practice round
-        player_in_pay_round = player.in_round(player.round_chosen_for_payment)
-        player.piecerate_payment = round(float(player_in_pay_round.num_key_pairs)*float(Constants.payment_rate),2) #fix this
-        print('round chosen is', player.performance_round_paid)
+        player.num_key_paid = player.round_chosen_for_payment.num_key_pairs
+        player_in_pay_round = player.in_round(round_chosen_for_payment)
+        player.piecerate_payment = round(float(player_in_pay_round.num_key_pairs)*float(Constants.payment_rate),2)
+        print('performance round chosen is', player.performance_round_paid)
         print(float(player_in_pay_round.num_key_pairs))
         print(float(Constants.payment_rate))
         print(player.piecerate_payment)
@@ -409,7 +411,8 @@ class payment_information(Page):
         return dict(
             pay_round=player.performance_round_paid,
             payoff = player.payoff,
-            piecerate_payment = player.piecerate_payment
+            piecerate_payment = player.piecerate_payment,
+            num_key_paid = player.num_key_paid
         )
 
 class wait_instructions(Page):
