@@ -175,11 +175,11 @@ def set_final_payoff(player):
         # determine random round for payment
         player.round_chosen_for_payment = random.randint(2, Constants.num_rounds)
         player.performance_round_paid = player.round_chosen_for_payment - 1 #since practice round is round 1. Just remember pay_round does not include practice round
-        player.num_key_paid = player.round_chosen_for_payment.num_key_pairs
-        player_in_pay_round = player.in_round(round_chosen_for_payment)
-        player.piecerate_payment = round(float(player_in_pay_round.num_key_pairs)*float(Constants.payment_rate),2)
         print('performance round chosen is', player.performance_round_paid)
-        print(float(player_in_pay_round.num_key_pairs))
+        player_in_pay_round = player.in_round(player.round_chosen_for_payment)
+        player.num_key_paid = player_in_pay_round.num_key_pairs
+        player.piecerate_payment = round(float(player.num_key_paid)*float(Constants.payment_rate),2)
+        print(float(player.num_key_paid))
         print(float(Constants.payment_rate))
         print(player.piecerate_payment)
         player.payoff = player.piecerate_payment + Constants.showupfee
@@ -420,50 +420,50 @@ class wait_instructions(Page):
         return self.round_number == 1
 
 
+# page_sequence = [
+    # start_experiment,
+    # ResultsWaitPage,
+    # instructions,
+    # payment_treatment_instructions,
+    # information_display_instructions,
+    # start_practice,
+    # start_practice_2,
+    # start_practice_3,
+    # ResultsWaitPage,
+    # practice_task,
+    # ResultsWaitPage,
+    # results_practice,
+    # start_task,
+    # FC_choose_group,
+    # task,
+    # ResultsWaitPage,
+    # Results,
+    # start_survey,
+    # survey_1,
+    # survey_2,
+    # survey_3,
+    # payment_information
+# ]
+
+#For bot testing:
 page_sequence = [
     start_experiment,
     ResultsWaitPage,
-    instructions,
-    payment_treatment_instructions,
-    information_display_instructions,
-    start_practice,
-    start_practice_2,
-    start_practice_3,
-    ResultsWaitPage,
+    # instructions,
+    # payment_treatment_instructions,
+    # information_display_instructions,
+    # start_practice,
+    # start_practice_2,
     practice_task,
     ResultsWaitPage,
-    results_practice,
-    start_task,
-    FC_choose_group,
+    # results_practice,
+    # FC_choose_group,
     task,
     ResultsWaitPage,
-    Results,
-    start_survey,
+    # Results,
+    # start_survey,
     survey_1,
     survey_2,
     survey_3,
     payment_information
 ]
-
-# page_sequence = [
-#     start_experiment,
-#     ResultsWaitPage,
-#     # instructions,
-#     # payment_treatment_instructions,
-#     # information_display_instructions,
-#     # start_practice,
-#     start_practice_2,
-#     ResultsWaitPage,
-#     practice_task,
-#     ResultsWaitPage,
-#     results_practice,
-#     FC_choose_group,
-#     task,
-#     ResultsWaitPage,
-#     Results,
-#     # start_survey,
-#     survey_1,
-#     survey_2,
-#     survey_3,
-#     payment_information
-# ]
